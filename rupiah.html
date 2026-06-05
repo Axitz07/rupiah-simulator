@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>USD to Rupiah</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #202124;
+      color: #e8eaed;
+      padding: 38px 80px;
+    }
+
+    .container {
+      max-width: 980px;
+    }
+
+    .top-text {
+      color: #bdc1c6;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .main-result {
+      font-size: 38px;
+      line-height: 1.25;
+      font-weight: 400;
+      margin-bottom: 12px;
+    }
+
+    .time-info {
+      color: #bdc1c6;
+      font-size: 13px;
+      margin-bottom: 26px;
+    }
+
+    .main-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 42px;
+    }
+
+    .left-panel {
+      width: 320px;
+      flex-shrink: 0;
+    }
+
+    .input-row {
+      display: flex;
+      align-items: center;
+      width: 320px;
+      height: 46px;
+      border: 1px solid #5f6368;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 14px;
+      background: #202124;
+    }
+
+    .input-row input {
+      width: 120px;
+      height: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: #e8eaed;
+      font-size: 17px;
+      padding: 0 12px;
+    }
+
+    .divider {
+      width: 1px;
+      height: 28px;
+      background: #5f6368;
+    }
+
+    .currency {
+      flex: 1;
+      padding: 0 12px 0 18px;
+      color: #d2e3fc;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      white-space: nowrap;
+    }
+
+    .arrow {
+      color: #9aa0a6;
+      font-size: 11px;
+      margin-left: 8px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 1px solid #5f6368;
+      background: #303134;
+      color: #e8eaed;
+      padding: 10px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button:hover {
+      background: #3c4043;
+    }
+
+    .status {
+      margin-top: 14px;
+      color: #bdc1c6;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .right-panel {
+      width: 440px;
+      padding-top: 2px;
+    }
+
+    .chart-tabs {
+      display: flex;
+      gap: 24px;
+      color: #bdc1c6;
+      font-size: 13px;
+      margin-bottom: 16px;
+      align-items: center;
+    }
+
+    .chart-tabs span {
+      cursor: default;
+    }
+
+    .chart-tabs .active {
+      color: #8ab4f8;
+      background: #374151;
+      padding: 4px 8px;
+      border-radius: 14px;
+      margin-left: -8px;
+    }
+
+    .chart-area {
+      position: relative;
+      width: 440px;
+      height: 180px;
+      border-bottom: 1px solid #3c4043;
+      overflow: hidden;
+    }
+
+    .grid-line {
+      position: absolute;
+      left: 40px;
+      right: 0;
+      height: 1px;
+      background: #3c4043;
+    }
+
+    .grid-top {
+      top: 20px;
+    }
+
+    .grid-middle {
+      top: 85px;
+    }
+
+    .grid-bottom {
+      top: 150px;
+    }
+
+    .y-label {
+      position: absolute;
+      left: 0;
+      color: #e8eaed;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .label-top {
+      top: 13px;
+    }
+
+    .label-middle {
+      top: 78px;
+    }
+
+    .label-bottom {
+      top: 143px;
+    }
+
+    .chart-svg {
+      position: absolute;
+      left: 42px;
+      top: 8px;
+      width: 398px;
+      height: 150px;
+    }
+
+    .x-labels {
+      width: 398px;
+      margin-left: 42px;
+      display: flex;
+      justify-content: space-around;
+      color: #bdc1c6;
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    .disclaimer {
+      margin-top: 32px;
+      width: 650px;
+      height: 1px;
+      background: #3c4043;
+    }
+
+    .more-button {
+      margin-top: -20px;
+      margin-left: 140px;
+      width: 375px;
+      height: 40px;
+      background: #303134;
+      color: #e8eaed;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    @media (max-width: 850px) {
+      body {
+        padding: 28px 20px;
+      }
+
+      .main-layout {
+        flex-direction: column;
+        gap: 28px;
+      }
+
+      .right-panel,
+      .chart-area {
+        width: 100%;
+      }
+
+      .chart-svg {
+        width: calc(100% - 42px);
+      }
+
+      .x-labels {
+        width: calc(100% - 42px);
+      }
+
+      .disclaimer {
+        width: 100%;
+      }
+
+      .more-button {
+        margin-left: 0;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="top-text">1 Dolar Amerika Serikat sama dengan</div>
+
+    <div class="main-result" id="mainResult">
+      18.138,85 Rupiah<br>
+      Indonesia
+    </div>
+
+    <div class="time-info">
+      5 Jun, 13.51 UTC · Data simulasi · Penafian
+    </div>
+
+    <div class="main-layout">
+
+      <div class="left-panel">
+        <div class="input-row">
+          <input type="number" id="usdInput" value="1" min="0" step="0.01">
+          <div class="divider"></div>
+          <div class="currency">
+            Dolar Amerika Serikat
+            <span class="arrow">▼</span>
+          </div>
+        </div>
+
+        <div class="input-row">
+          <input type="text" id="idrInput" readonly>
+          <div class="divider"></div>
+          <div class="currency">
+            Rupiah Indonesia
+            <span class="arrow">▼</span>
+          </div>
+        </div>
+
+        <div class="buttons">
+          <button onclick="strengthenRupiah()">Rupiah Menguat</button>
+          <button onclick="weakenRupiah()">Rupiah Melemah</button>
+          <button onclick="resetRate()">Reset</button>
+        </div>
+
+        <div class="status" id="statusText">
+          Status: Rupiah masih normal. Sebuah kalimat yang terdengar seperti dongeng ekonomi.
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <div class="chart-tabs">
+          <span>1HR</span>
+          <span>5HR</span>
+          <span class="active">1BLN</span>
+          <span>1TH</span>
+          <span>5TH</span>
+          <span>Maks</span>
+        </div>
+
+        <div class="chart-area">
+          <div class="grid-line grid-top"></div>
+          <div class="grid-line grid-middle"></div>
+          <div class="grid-line grid-bottom"></div>
+
+          <span class="y-label label-top">18.500</span>
+          <span class="y-label label-middle">18.000</span>
+          <span class="y-label label-bottom">17.000</span>
+
+          <svg class="chart-svg" viewBox="0 0 398 150" preserveAspectRatio="none">
+            <polyline
+              id="chartLine"
+              points="0,105 25,112 50,108 75,102 100,95 125,80 150,88 175,76 200,73 225,60 250,70 275,68 300,64 325,55 350,58 375,35 398,28"
+              fill="none"
+              stroke="#81c995"
+              stroke-width="3"
+            />
+
+            <circle
+              id="chartDot"
+              cx="300"
+              cy="64"
+              r="5"
+              fill="#81c995"
+            />
+          </svg>
+        </div>
+
+        <div class="x-labels">
+          <span>15 Mei</span>
+          <span>27 Mei</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="disclaimer"></div>
+    <div class="more-button">
+      Selengkapnya tentang USD/IDR ›
+    </div>
+  </div>
+
+  <script>
+    const usdInput = document.getElementById("usdInput");
+    const idrInput = document.getElementById("idrInput");
+    const mainResult = document.getElementById("mainResult");
+    const statusText = document.getElementById("statusText");
+    const chartLine = document.getElementById("chartLine");
+    const chartDot = document.getElementById("chartDot");
+
+    const defaultRate = 18138.85;
+    let rate = defaultRate;
+
+    function formatIDR(value) {
+      return new Intl.NumberFormat("id-ID", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(value);
+    }
+
+    function convert() {
+      const usd = parseFloat(usdInput.value) || 0;
+      const result = usd * rate;
+
+      idrInput.value = formatIDR(result);
+      mainResult.innerHTML = `${formatIDR(rate)} Rupiah<br>Indonesia`;
+    }
+
+    function strengthenRupiah() {
+      rate -= 250;
+
+      if (rate < 1) {
+        rate = 1;
+      }
+
+      statusText.textContent =
+        "Status: Rupiah menguat. Gacorr Kannggg";
+
+      chartLine.setAttribute(
+        "points",
+        "0,115 25,113 50,110 75,105 100,102 125,96 150,92 175,86 200,82 225,76 250,70 275,65 300,58 325,52 350,48 375,42 398,36"
+      );
+
+      chartDot.setAttribute("cx", "300");
+      chartDot.setAttribute("cy", "58");
+
+      convert();
+    }
+
+    function weakenRupiah() {
+      rate += 250;
+
+      if (rate > 30000) {
+        rate = 30000;
+      }
+
+      statusText.textContent =
+        "Status: Rupiah melemah. Tenang, Kan di desa ga pake dollar";
+
+      chartLine.setAttribute(
+        "points",
+        "0,120 25,116 50,110 75,106 100,98 125,92 150,84 175,76 200,66 225,58 250,52 275,45 300,38 325,30 350,24 375,16 398,8"
+      );
+
+      chartDot.setAttribute("cx", "300");
+      chartDot.setAttribute("cy", "38");
+
+      convert();
+    }
+
+    function resetRate() {
+      rate = defaultRate;
+
+      statusText.textContent =
+        "Status: Rupiah masih normal. HALAH NYOCOT.";
+
+      chartLine.setAttribute(
+        "points",
+        "0,105 25,112 50,108 75,102 100,95 125,80 150,88 175,76 200,73 225,60 250,70 275,68 300,64 325,55 350,58 375,35 398,28"
+      );
+
+      chartDot.setAttribute("cx", "300");
+      chartDot.setAttribute("cy", "64");
+
+      convert();
+    }
+
+    usdInput.addEventListener("input", convert);
+
+    convert();
+  </script>
+
+</body>
+</html>
