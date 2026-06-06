@@ -134,23 +134,63 @@
 
     .chart-tabs {
       display: flex;
-      gap: 24px;
+      gap: 10px;
       color: #bdc1c6;
       font-size: 13px;
       margin-bottom: 16px;
       align-items: center;
+      flex-wrap: wrap;
     }
 
-    .chart-tabs span {
-      cursor: default;
-    }
-
-    .chart-tabs .active {
-      color: #8ab4f8;
-      background: #374151;
+    .chart-tab {
+      border: none;
+      background: transparent;
+      color: #bdc1c6;
       padding: 4px 8px;
       border-radius: 14px;
-      margin-left: -8px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .chart-tab:hover {
+      background: #2b2f33;
+    }
+
+    .chart-tab.active {
+      color: #8ab4f8;
+      background: #374151;
+    }
+
+    .chart-summary {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .chart-price {
+      font-size: 28px;
+      font-weight: 500;
+      color: #e8eaed;
+    }
+
+    .chart-change {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .chart-change.positive {
+      color: #81c995;
+    }
+
+    .chart-change.negative {
+      color: #f28b82;
+    }
+
+    .chart-caption {
+      color: #9aa0a6;
+      font-size: 12px;
+      margin-bottom: 16px;
     }
 
     .chart-area {
@@ -209,14 +249,27 @@
       height: 150px;
     }
 
+    .chart-fill {
+      fill: url(#chartGradient);
+      opacity: 0.24;
+    }
+
+    .chart-stroke {
+      fill: none;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
     .x-labels {
       width: 398px;
       margin-left: 42px;
       display: flex;
-      justify-content: space-around;
+      justify-content: space-between;
       color: #bdc1c6;
       font-size: 12px;
       margin-top: 6px;
+      gap: 12px;
     }
 
     .disclaimer {
@@ -285,8 +338,8 @@
       Indonesia
     </div>
 
-    <div class="time-info">
-      5 Jun, 13.51 UTC · Data simulasi · Penafian
+    <div class="time-info" id="timeInfo">
+      Memuat waktu realtime...
     </div>
 
     <div class="main-layout">
@@ -317,18 +370,26 @@
         </div>
 
         <div class="status" id="statusText">
-          Status: Rupiah masih normal. Sebuah kalimat yang terdengar seperti dongeng ekonomi.
+          Status: Rupiah masih normal. Halah Nyocot.
         </div>
       </div>
 
       <div class="right-panel">
         <div class="chart-tabs">
-          <span>1HR</span>
-          <span>5HR</span>
-          <span class="active">1BLN</span>
-          <span>1TH</span>
-          <span>5TH</span>
-          <span>Maks</span>
+          <button class="chart-tab" data-range="1HR" type="button">1HR</button>
+          <button class="chart-tab" data-range="5HR" type="button">5HR</button>
+          <button class="chart-tab active" data-range="1BLN" type="button">1BLN</button>
+          <button class="chart-tab" data-range="1TH" type="button">1TH</button>
+          <button class="chart-tab" data-range="5TH" type="button">5TH</button>
+          <button class="chart-tab" data-range="Maks" type="button">Maks</button>
+        </div>
+
+        <div class="chart-summary">
+          <span class="chart-price" id="chartPrice">18.138,85</span>
+          <span class="chart-change positive" id="chartChange">+0,00%</span>
+        </div>
+        <div class="chart-caption" id="chartCaption">
+          Pergerakan 1 bulan terakhir
         </div>
 
         <div class="chart-area">
@@ -336,32 +397,45 @@
           <div class="grid-line grid-middle"></div>
           <div class="grid-line grid-bottom"></div>
 
-          <span class="y-label label-top">18.500</span>
-          <span class="y-label label-middle">18.000</span>
-          <span class="y-label label-bottom">17.000</span>
+          <span class="y-label label-top" id="labelTop">18.500</span>
+          <span class="y-label label-middle" id="labelMiddle">18.000</span>
+          <span class="y-label label-bottom" id="labelBottom">17.000</span>
 
           <svg class="chart-svg" viewBox="0 0 398 150" preserveAspectRatio="none">
-            <polyline
+            <defs>
+              <linearGradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+                <stop id="gradientTop" offset="0%" stop-color="#81c995" />
+                <stop id="gradientBottom" offset="100%" stop-color="#81c995" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+
+            <path
+              id="chartAreaFill"
+              class="chart-fill"
+              d=""
+            />
+
+            <path
               id="chartLine"
-              points="0,105 25,112 50,108 75,102 100,95 125,80 150,88 175,76 200,73 225,60 250,70 275,68 300,64 325,55 350,58 375,35 398,28"
-              fill="none"
+              class="chart-stroke"
+              d=""
               stroke="#81c995"
-              stroke-width="3"
             />
 
             <circle
               id="chartDot"
-              cx="300"
-              cy="64"
+              cx="398"
+              cy="75"
               r="5"
               fill="#81c995"
             />
           </svg>
         </div>
 
-        <div class="x-labels">
+        <div class="x-labels" id="xLabels">
           <span>15 Mei</span>
-          <span>27 Mei</span>
+          <span>22 Mei</span>
+          <span>29 Mei</span>
         </div>
       </div>
 
@@ -379,10 +453,35 @@
     const mainResult = document.getElementById("mainResult");
     const statusText = document.getElementById("statusText");
     const chartLine = document.getElementById("chartLine");
+    const chartAreaFill = document.getElementById("chartAreaFill");
     const chartDot = document.getElementById("chartDot");
+    const timeInfo = document.getElementById("timeInfo");
+    const chartPrice = document.getElementById("chartPrice");
+    const chartChange = document.getElementById("chartChange");
+    const chartCaption = document.getElementById("chartCaption");
+    const labelTop = document.getElementById("labelTop");
+    const labelMiddle = document.getElementById("labelMiddle");
+    const labelBottom = document.getElementById("labelBottom");
+    const xLabels = document.getElementById("xLabels");
+    const gradientTop = document.getElementById("gradientTop");
+    const gradientBottom = document.getElementById("gradientBottom");
+    const chartTabs = document.querySelectorAll(".chart-tab");
 
     const defaultRate = 18138.85;
+    const chartWidth = 398;
+    const chartHeight = 150;
+    const rangeConfigs = {
+      "1HR": { count: 24, label: "1 hari terakhir", volatility: 22, drift: 0.25, stepMs: 60 * 60 * 1000 },
+      "5HR": { count: 30, label: "5 hari terakhir", volatility: 40, drift: 0.55, stepMs: 4 * 60 * 60 * 1000 },
+      "1BLN": { count: 30, label: "1 bulan terakhir", volatility: 72, drift: 0.9, stepMs: 24 * 60 * 60 * 1000 },
+      "1TH": { count: 24, label: "1 tahun terakhir", volatility: 165, drift: 1.2, stepMs: 15 * 24 * 60 * 60 * 1000 },
+      "5TH": { count: 36, label: "5 tahun terakhir", volatility: 260, drift: 1.5, stepMs: 52 * 24 * 60 * 60 * 1000 },
+      "Maks": { count: 48, label: "periode maksimum", volatility: 340, drift: 1.8, stepMs: 90 * 24 * 60 * 60 * 1000 }
+    };
+
     let rate = defaultRate;
+    let activeRange = "1BLN";
+    let trendDirection = 0;
 
     function formatIDR(value) {
       return new Intl.NumberFormat("id-ID", {
@@ -391,75 +490,204 @@
       }).format(value);
     }
 
+    function updateTimeInfo() {
+      const now = new Date();
+      const dateText = new Intl.DateTimeFormat("id-ID", {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+      }).format(now);
+      const timeText = new Intl.DateTimeFormat("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      }).format(now);
+
+      timeInfo.textContent = `${dateText}, ${timeText} WIB · Data Realtime`;
+    }
+
+    function formatAxisValue(value) {
+      return new Intl.NumberFormat("id-ID", {
+        maximumFractionDigits: 0
+      }).format(Math.round(value));
+    }
+
+    function formatShortLabel(date, rangeKey) {
+      if (rangeKey === "1HR") {
+        return new Intl.DateTimeFormat("id-ID", {
+          hour: "2-digit",
+          minute: "2-digit"
+        }).format(date);
+      }
+
+      if (rangeKey === "1TH" || rangeKey === "5TH" || rangeKey === "Maks") {
+        return new Intl.DateTimeFormat("id-ID", {
+          month: "short",
+          year: "2-digit"
+        }).format(date);
+      }
+
+      return new Intl.DateTimeFormat("id-ID", {
+        day: "numeric",
+        month: "short"
+      }).format(date);
+    }
+
+    function buildChartSeries(rangeKey) {
+      const config = rangeConfigs[rangeKey];
+      const now = Date.now();
+      const values = [];
+      const labels = [];
+      const midpoint = (config.count - 1) / 2;
+      const directionalBias = trendDirection * config.drift;
+
+      for (let index = 0; index < config.count; index += 1) {
+        const progress = index / Math.max(config.count - 1, 1);
+        const waveA = Math.sin(index * 0.85 + rate / 1600) * config.volatility;
+        const waveB = Math.cos(index * 0.35 + rate / 2200) * (config.volatility * 0.45);
+        const waveC = Math.sin(index * 0.18 + trendDirection) * (config.volatility * 0.2);
+        const slope = (index - midpoint) * directionalBias * 14;
+        const baseValue = rate + waveA + waveB + waveC + slope;
+
+        values.push(Number(baseValue.toFixed(2)));
+
+        const pointDate = new Date(now - ((config.count - 1 - index) * config.stepMs));
+        labels.push(formatShortLabel(pointDate, rangeKey));
+      }
+
+      values[values.length - 1] = Number(rate.toFixed(2));
+
+      return { values, labels, config };
+    }
+
+    function buildLinePath(points) {
+      if (!points.length) {
+        return "";
+      }
+
+      let path = `M ${points[0].x} ${points[0].y}`;
+
+      for (let index = 1; index < points.length; index += 1) {
+        const previous = points[index - 1];
+        const current = points[index];
+        const controlX = (previous.x + current.x) / 2;
+        path += ` C ${controlX} ${previous.y}, ${controlX} ${current.y}, ${current.x} ${current.y}`;
+      }
+
+      return path;
+    }
+
+    function renderChart() {
+      const { values, labels, config } = buildChartSeries(activeRange);
+      const minValue = Math.min(...values);
+      const maxValue = Math.max(...values);
+      const padding = Math.max((maxValue - minValue) * 0.18, 90);
+      const domainMin = minValue - padding;
+      const domainMax = maxValue + padding;
+      const domainRange = domainMax - domainMin || 1;
+      const points = values.map((value, index) => {
+        const x = (chartWidth / (values.length - 1)) * index;
+        const y = chartHeight - (((value - domainMin) / domainRange) * chartHeight);
+        return {
+          x: Number(x.toFixed(2)),
+          y: Number(y.toFixed(2))
+        };
+      });
+      const linePath = buildLinePath(points);
+      const fillPath = `${linePath} L ${chartWidth} ${chartHeight} L 0 ${chartHeight} Z`;
+      const firstValue = values[0];
+      const lastValue = values[values.length - 1];
+      const delta = lastValue - firstValue;
+      const percentage = (delta / firstValue) * 100;
+      const trendClass = delta >= 0 ? "positive" : "negative";
+      const trendColor = delta >= 0 ? "#81c995" : "#f28b82";
+      const sampleLabelIndexes = [0, Math.floor((labels.length - 1) / 2), labels.length - 1];
+
+      chartLine.setAttribute("d", linePath);
+      chartLine.setAttribute("stroke", trendColor);
+      chartAreaFill.setAttribute("d", fillPath);
+      chartDot.setAttribute("cx", points[points.length - 1].x);
+      chartDot.setAttribute("cy", points[points.length - 1].y);
+      chartDot.setAttribute("fill", trendColor);
+      gradientTop.setAttribute("stop-color", trendColor);
+      gradientBottom.setAttribute("stop-color", trendColor);
+
+      labelTop.textContent = formatAxisValue(domainMax);
+      labelMiddle.textContent = formatAxisValue((domainMax + domainMin) / 2);
+      labelBottom.textContent = formatAxisValue(domainMin);
+
+      chartPrice.textContent = formatIDR(lastValue);
+      chartChange.textContent = `${delta >= 0 ? "+" : ""}${percentage.toFixed(2).replace(".", ",")}%`;
+      chartChange.className = `chart-change ${trendClass}`;
+      chartCaption.textContent = `Pergerakan ${config.label}`;
+
+      xLabels.innerHTML = sampleLabelIndexes
+        .map((labelIndex) => `<span>${labels[labelIndex]}</span>`)
+        .join("");
+    }
+
     function convert() {
       const usd = parseFloat(usdInput.value) || 0;
       const result = usd * rate;
 
       idrInput.value = formatIDR(result);
       mainResult.innerHTML = `${formatIDR(rate)} Rupiah<br>Indonesia`;
+      renderChart();
     }
 
     function strengthenRupiah() {
       rate -= 250;
+      trendDirection = -1;
 
       if (rate < 1) {
         rate = 1;
       }
 
       statusText.textContent =
-        "Status: Rupiah menguat. Gacorr Kannggg";
-
-      chartLine.setAttribute(
-        "points",
-        "0,115 25,113 50,110 75,105 100,102 125,96 150,92 175,86 200,82 225,76 250,70 275,65 300,58 325,52 350,48 375,42 398,36"
-      );
-
-      chartDot.setAttribute("cx", "300");
-      chartDot.setAttribute("cy", "58");
+        "Status: Rupiah menguat. Gacorr Kanggg.";
 
       convert();
     }
 
     function weakenRupiah() {
       rate += 250;
+      trendDirection = 1;
 
       if (rate > 30000) {
         rate = 30000;
       }
 
       statusText.textContent =
-        "Status: Rupiah melemah. Tenang, Kan di desa ga pake dollar";
-
-      chartLine.setAttribute(
-        "points",
-        "0,120 25,116 50,110 75,106 100,98 125,92 150,84 175,76 200,66 225,58 250,52 275,45 300,38 325,30 350,24 375,16 398,8"
-      );
-
-      chartDot.setAttribute("cx", "300");
-      chartDot.setAttribute("cy", "38");
+        "Status: Rupiah melemah. Tenang aja kan orang desa ga pake dollar.";
 
       convert();
     }
 
     function resetRate() {
       rate = defaultRate;
+      trendDirection = 0;
 
       statusText.textContent =
-        "Status: Rupiah masih normal. HALAH NYOCOT.";
-
-      chartLine.setAttribute(
-        "points",
-        "0,105 25,112 50,108 75,102 100,95 125,80 150,88 175,76 200,73 225,60 250,70 275,68 300,64 325,55 350,58 375,35 398,28"
-      );
-
-      chartDot.setAttribute("cx", "300");
-      chartDot.setAttribute("cy", "64");
+        "Status: Rupiah masih normal. HEYY ANTEK ANTEK ASENG.";
 
       convert();
     }
 
     usdInput.addEventListener("input", convert);
+    chartTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        activeRange = tab.dataset.range;
 
+        chartTabs.forEach((item) => {
+          item.classList.toggle("active", item === tab);
+        });
+
+        renderChart();
+      });
+    });
+
+    updateTimeInfo();
+    setInterval(updateTimeInfo, 1000);
     convert();
   </script>
 
